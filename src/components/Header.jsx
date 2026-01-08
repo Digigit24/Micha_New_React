@@ -11,6 +11,7 @@ const Header = () => {
   const SAND = "#CEC2A3";
   const BROWN = "#3B2F2A";
   const WHITE = "#FFFFFF";
+  const BLACK = "#000000"; // Added Black for search
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 10);
@@ -32,12 +33,11 @@ const Header = () => {
   return (
     <>
       <header
-        // UPDATED: Changed 'sticky' to 'fixed' so it stays pinned on screen
         className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${
           isScrolled ? "shadow-md py-2" : "py-4"
         }`}
         style={{
-          background: SAND, // Always SAND color as requested
+          background: SAND,
           backdropFilter: isScrolled ? "blur(10px)" : "none",
         }}
       >
@@ -90,11 +90,12 @@ const Header = () => {
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="pl-3 pr-8 py-1.5 rounded-full text-xs outline-none border transition-all w-32 focus:w-48 focus:border-opacity-100"
+                  // UPDATED: Added 'search-input' class for placeholder styling
+                  className="search-input pl-3 pr-8 py-1.5 rounded-full text-xs outline-none border transition-all w-32 focus:w-48 focus:border-opacity-100"
                   style={{
                     background: "rgba(255,255,255,0.2)",
                     borderColor: "rgba(59,47,42,0.2)",
-                    color: BROWN,
+                    color: BLACK, // UPDATED: Input text is now Black
                   }}
                 />
                 <FiSearch 
@@ -159,8 +160,12 @@ const Header = () => {
             <input
               type="text"
               placeholder="Search products..."
-              className="w-full pl-4 pr-10 py-3 rounded-lg text-sm outline-none border bg-white/50"
-              style={{ color: BROWN, borderColor: BROWN }}
+              // UPDATED: Added 'search-input' class
+              className="search-input w-full pl-4 pr-10 py-3 rounded-lg text-sm outline-none border bg-white/50"
+              style={{ 
+                color: BLACK, // UPDATED: Text is Black
+                borderColor: BROWN 
+              }}
             />
             <FiSearch 
               className="absolute right-3 top-1/2 -translate-y-1/2" 
@@ -199,8 +204,9 @@ const Header = () => {
         </div>
       </div>
 
-      {/* STYLES for Underline Animation */}
+      {/* STYLES */}
       <style>{`
+        /* Navigation Line */
         .nav-link::after {
           content: "";
           position: absolute;
@@ -216,6 +222,20 @@ const Header = () => {
         }
         .nav-link.opacity-100::after {
            width: 100%;
+        }
+
+        /* UPDATED: Search Input Placeholder Color */
+        .search-input::placeholder {
+          color: ${BLACK};
+          opacity: 1; /* Make it distinct */
+        }
+        
+        /* Fallback for specific browsers */
+        .search-input::-webkit-input-placeholder {
+          color: ${BLACK};
+        }
+        .search-input:-ms-input-placeholder {
+          color: ${BLACK};
         }
       `}</style>
     </>
