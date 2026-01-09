@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Product from "./Product.jsx";
 import AboutContent from "./about/AboutContent";
 import CategoryGrid from "./categories/CategoryGrid";
-// Footer is handled externally
+import Footer from "./Footer.jsx";
+import FashionCollection from "./products/FashionCollection"; // IMPORTED HERE
 
 const Hero = () => {
   // Theme colors
@@ -47,15 +47,25 @@ const Hero = () => {
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white h-screen overflow-y-scroll snap-container">
       {/* 
         CSS FOR SCROLL SNAPPING 
       */}
       <style>{`
-        html {
+        /* Hide scrollbar for cleaner look (optional) */
+        .snap-container::-webkit-scrollbar {
+          display: none;
+        }
+        .snap-container {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
           scroll-snap-type: y mandatory;
           scroll-behavior: smooth;
         }
+
+        /* 
+           Main Full Screen Sections 
+        */
         .snap-section {
           scroll-snap-align: start;
           scroll-snap-stop: always;
@@ -63,13 +73,25 @@ const Hero = () => {
           width: 100%;
           display: flex;
           flex-direction: column;
-          /* Align to top so padding pushes content down correctly */
           justify-content: flex-start; 
           position: relative;
         }
+
         /* Specific fix for Hero to stay centered */
         .snap-hero {
           justify-content: center;
+        }
+
+        /* 
+           Footer Snap Logic 
+           We use 'start' alignment but DO NOT set min-height: 100vh.
+           This allows the footer to take up only its natural space 
+           while still letting the scroll-snap catch it.
+        */
+        .snap-footer-wrapper {
+          scroll-snap-align: start;
+          width: 100%;
+          height: auto; 
         }
       `}</style>
 
@@ -113,7 +135,7 @@ const Hero = () => {
             className="absolute inset-0 z-[7] cursor-pointer bg-transparent"
           />
 
-          {/* Left Arrow */}
+          {/* Navigation Controls (Arrows & Dots) */}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); goPrev(); }}
@@ -128,7 +150,6 @@ const Hero = () => {
             <span className="text-xl leading-none select-none">‹</span>
           </button>
 
-          {/* Right Arrow */}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); goNext(); }}
@@ -143,7 +164,6 @@ const Hero = () => {
             <span className="text-xl leading-none select-none">›</span>
           </button>
 
-          {/* Dots */}
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-[20] flex gap-2">
             {slides.map((_, i) => (
               <button
@@ -156,7 +176,7 @@ const Hero = () => {
             ))}
           </div>
 
-          {/* Center Text Content */}
+          {/* Hero Content */}
           <div className="absolute inset-0 z-[20] pointer-events-none">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center">
               <div className="w-full max-w-3xl text-center pointer-events-auto">
@@ -174,12 +194,10 @@ const Hero = () => {
                 >
                   Micha
                 </h1>
-
                 <p className="mb-8 text-base sm:text-lg" style={{ color: BROWN }}>
                   Micha is your all-in-one AI assistant designed to simplify content creation,
                   enhance productivity, and unlock new possibilities.
                 </p>
-
                 <div className="flex justify-center gap-4 flex-wrap">
                   <a
                     href="/product"
@@ -193,8 +211,6 @@ const Hero = () => {
             </div>
           </div>
         </div>
-
-        {/* Hero 3D Animation CSS */}
         <style>{`
           .hero-3d {
             transform: perspective(1000px) rotateX(10deg);
@@ -212,7 +228,6 @@ const Hero = () => {
           2. ABOUT SECTION (SNAP 2)
       ========================================== */}
       <div className="snap-section bg-white">
-        {/* Added Padding Top (pt-24) to create margin from fixed header */}
         <div className="pt-24 md:pt-32 h-full flex flex-col justify-center">
           <AboutContent />
         </div>
@@ -222,9 +237,7 @@ const Hero = () => {
           3. CATEGORIES SECTION (SNAP 3)
       ========================================== */}
       <div className="snap-section bg-white">
-        {/* Added Padding Top (pt-24) */}
         <div className="w-full pt-24 md:pt-32 pb-10 h-full flex flex-col justify-center">
-          
           <div className="max-w-7xl mx-auto px-4 text-center mb-10">
             <h4 
               className="text-xs md:text-sm font-bold tracking-[0.2em] uppercase mb-3 opacity-80" 
@@ -243,21 +256,23 @@ const Hero = () => {
               style={{ background: SAND }}
             ></div>
           </div>
-          
           <CategoryGrid />
         </div>
       </div>
 
       {/* =========================================
-          4. PRODUCT SECTION (SNAP 4)
+          4. FASHION COLLECTION SECTION (SNAP 4)
       ========================================== */}
       <div className="snap-section bg-white">
-        {/* Added Padding Top (pt-24) */}
-        <div className="pt-24 md:pt-32 h-full">
-          <Product />
-        </div>
+        <FashionCollection />
       </div>
 
+      {/* =========================================
+          5. FOOTER (SNAP 5 - AUTO HEIGHT)
+      ========================================== */}
+      <div className="snap-footer-wrapper">
+        <Footer />
+      </div>
     </div>
   );
 };

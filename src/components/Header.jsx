@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { FiMenu, FiShoppingCart, FiUser, FiSearch, FiX, FiHeart } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
+import WishlistDrawer from "./common/WishlistDrawer"; 
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false); 
   const location = useLocation();
 
-  // Theme Colors
   const SAND = "#CEC2A3";
   const BROWN = "#3B2F2A";
-  const WHITE = "#FFFFFF";
-  const BLACK = "#000000"; // Added Black for search
+  const BLACK = "#000000";
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 10);
+    const onScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -24,7 +24,6 @@ const Header = () => {
     { id: 2, name: "ABOUT", link: "/about" },
     { id: 3, name: "PRODUCT", link: "/product" },
     { id: 4, name: "CATEGORIES", link: "/categories" },
-    { id: 5, name: "OFFERS", link: "/offers" },
     { id: 6, name: "CONTACT", link: "/contact" },
   ];
 
@@ -33,210 +32,99 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${
-          isScrolled ? "shadow-md py-2" : "py-4"
-        }`}
-        style={{
-          background: SAND,
-          backdropFilter: isScrolled ? "blur(10px)" : "none",
-        }}
+        className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ${isScrolled ? "shadow-lg" : ""}`}
+        style={{ background: SAND, backdropFilter: "blur(12px)" }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className={`flex items-center justify-between transition-all duration-500 ${isScrolled ? "h-14 md:h-16" : "h-16 md:h-20"}`}>
             
-            {/* =======================
-                1. LOGO (Left)
-               ======================= */}
-            <Link
-              to="/"
-              className="flex-shrink-0 relative z-50"
-              onClick={() => setIsMobileMenuOpen(false)}
-              style={{
-                color: BROWN,
-                fontFamily: "'Allura', cursive",
-                fontSize: "clamp(2.2rem, 3vw, 2.8rem)",
-                lineHeight: "1",
-                textShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              }}
-            >
+            {/* LOGO */}
+            <Link to="/" className="flex-shrink-0 z-50" style={{ color: BROWN, fontFamily: "'Allura', cursive", fontSize: "clamp(1.8rem, 3vw, 2.5rem)", lineHeight: "1" }}>
               Micha
             </Link>
 
-            {/* =======================
-                2. NAVIGATION (Center - Hidden on Mobile)
-               ======================= */}
-            <nav className="hidden lg:flex items-center gap-8">
+            {/* NAVIGATION (DESKTOP) */}
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-10">
               {navItems.map((item) => (
-                <Link
-                  key={item.id}
-                  to={item.link}
-                  className={`relative text-xs font-bold tracking-[0.15em] uppercase transition-colors nav-link ${
-                    isActive(item.link) ? "opacity-100 font-extrabold" : "opacity-70 hover:opacity-100"
-                  }`}
-                  style={{ color: BROWN }}
-                >
+                <Link key={item.id} to={item.link} className={`relative text-[10px] xl:text-[11px] font-bold tracking-[0.2em] uppercase transition-all nav-link ${isActive(item.link) ? "opacity-100" : "opacity-60 hover:opacity-100"}`} style={{ color: BROWN }}>
                   {item.name}
                 </Link>
               ))}
             </nav>
 
-            {/* =======================
-                3. ICONS & SEARCH (Right)
-               ======================= */}
-            <div className="flex items-center gap-3 md:gap-5">
+            {/* ACTION ICONS */}
+            <div className="flex items-center gap-1 sm:gap-3">
               
-              {/* Search Input (Compact - Desktop) */}
-              <div className="hidden md:flex items-center relative group">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  // UPDATED: Added 'search-input' class for placeholder styling
-                  className="search-input pl-3 pr-8 py-1.5 rounded-full text-xs outline-none border transition-all w-32 focus:w-48 focus:border-opacity-100"
-                  style={{
-                    background: "rgba(255,255,255,0.2)",
-                    borderColor: "rgba(59,47,42,0.2)",
-                    color: BLACK, // UPDATED: Input text is now Black
-                  }}
-                />
-                <FiSearch 
-                  className="absolute right-2.5 cursor-pointer opacity-60 group-hover:opacity-100 transition-opacity" 
-                  size={14} 
-                  style={{ color: BROWN }} 
-                />
+              {/* SEARCH (Hidden on small mobile) */}
+              <div className="hidden md:flex items-center relative group mr-2">
+                <input type="text" placeholder="Search..." className="search-input pl-4 pr-10 py-1.5 rounded-full text-[11px] outline-none border transition-all w-32 focus:w-44" style={{ background: "rgba(255,255,255,0.2)", borderColor: "rgba(59,47,42,0.1)", color: BLACK }} />
+                <FiSearch className="absolute right-3 opacity-50" size={14} style={{ color: BROWN }} />
               </div>
 
-              {/* Icons Group */}
-              <div className="flex items-center gap-2 md:gap-3">
+              {/* ICONS GROUP: Wishlist, Cart, Profile */}
+              <div className="flex items-center">
                 
-                {/* Wishlist */}
-                <Link to="/wishlist" className="hidden md:block relative p-2 transition hover:scale-110" style={{ color: BROWN }}>
+                {/* 1. Wishlist Icon */}
+                <button 
+                  onClick={() => setIsWishlistOpen(true)}
+                  className="p-2 sm:p-2.5 text-[#3B2F2A] hover:bg-white/20 rounded-full transition-all"
+                  aria-label="Wishlist"
+                >
                   <FiHeart size={20} />
-                  <span className="absolute -top-0.5 -right-0.5 bg-[#FFFFFF] text-[#3B2F2A] text-[9px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center shadow-sm">
-                    2
-                  </span>
-                </Link>
+                </button>
 
-                {/* Cart */}
-                <Link to="/cart" className="relative p-2 transition hover:scale-110" style={{ color: BROWN }}>
+                {/* 2. Cart Icon */}
+                <Link to="/cart" className="relative p-2 sm:p-2.5 text-[#3B2F2A] hover:bg-white/20 rounded-full transition-all" aria-label="Cart">
                   <FiShoppingCart size={20} />
-                  <span className="absolute -top-0.5 -right-0.5 bg-[#FFFFFF] text-[#3B2F2A] text-[9px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center shadow-sm">
-                    5
-                  </span>
+                  <span className="absolute top-1.5 right-1.5 bg-white text-[8px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-sm">3</span>
                 </Link>
 
-                {/* User */}
-                <Link to="/login" className="hidden md:block p-2 transition hover:scale-110" style={{ color: BROWN }}>
+                {/* 3. Profile Icon */}
+                <Link to="/login" className="p-2 sm:p-2.5 text-[#3B2F2A] hover:bg-white/20 rounded-full transition-all" aria-label="Profile">
                   <FiUser size={20} />
                 </Link>
 
-                {/* Mobile Menu Toggle */}
-                <button
-                  className="lg:hidden p-2 transition hover:opacity-70"
-                  style={{ color: BROWN }}
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
+                {/* MOBILE MENU TOGGLE */}
+                <button className="lg:hidden p-2 ml-1" style={{ color: BROWN }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                   {isMobileMenuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       </header>
 
-      {/* =======================
-          MOBILE MENU OVERLAY
-         ======================= */}
-      <div
-        className={`fixed inset-0 z-40 bg-white transition-transform duration-300 lg:hidden ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-        style={{ top: "90px" }} 
-      >
-        <div className="p-6 flex flex-col gap-6 h-full overflow-y-auto border-t border-gray-100" style={{ backgroundColor: SAND }}>
-          
-          {/* Mobile Search */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search products..."
-              // UPDATED: Added 'search-input' class
-              className="search-input w-full pl-4 pr-10 py-3 rounded-lg text-sm outline-none border bg-white/50"
-              style={{ 
-                color: BLACK, // UPDATED: Text is Black
-                borderColor: BROWN 
-              }}
-            />
-            <FiSearch 
-              className="absolute right-3 top-1/2 -translate-y-1/2" 
-              size={18} 
-              style={{ color: BROWN }} 
-            />
-          </div>
+      {/* Wishlist Drawer */}
+      <WishlistDrawer isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
 
-          {/* Mobile Nav Links */}
-          <nav>
-            <ul className="flex flex-col gap-4">
-              {navItems.map((item) => (
-                <li key={item.id} className="border-b border-black/5 pb-2">
-                  <Link
-                    to={item.link}
-                    className="text-lg font-bold tracking-wider block"
-                    style={{ color: BROWN }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+      {/* MOBILE MENU OVERLAY */}
+      <div className={`fixed inset-0 z-40 bg-white transition-all duration-500 lg:hidden ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
+        <div className="absolute inset-0" style={{ backgroundColor: SAND }} />
+        <div className={`flex flex-col h-full px-8 pt-28 pb-12 transition-transform duration-500 ${isMobileMenuOpen ? "translate-y-0" : "-translate-y-10"}`}>
+          <nav className="flex flex-col gap-6">
+            {navItems.map((item) => (
+              <Link key={item.id} to={item.link} className="text-3xl font-bold tracking-tight" style={{ color: BROWN }} onClick={() => setIsMobileMenuOpen(false)}>
+                {item.name}
+              </Link>
+            ))}
           </nav>
-
-          {/* Mobile Account Links */}
-          <div className="mt-auto flex flex-col gap-4 pb-20">
-            <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 font-semibold" style={{ color: BROWN }}>
-              <FiUser size={20} /> My Account
-            </Link>
-            <Link to="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 font-semibold" style={{ color: BROWN }}>
-              <FiHeart size={20} /> Wishlist
-            </Link>
+          
+          <div className="mt-auto flex flex-col gap-6 pt-6 border-t border-[#3B2F2A]/10">
+            <div className="flex justify-between items-center">
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-sm tracking-widest" style={{ color: BROWN }}>ACCOUNT</Link>
+                <div className="flex gap-4">
+                    <button onClick={() => { setIsMobileMenuOpen(false); setIsWishlistOpen(true); }}><FiHeart size={22} /></button>
+                    <Link to="/cart"><FiShoppingCart size={22} /></Link>
+                </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* STYLES */}
       <style>{`
-        /* Navigation Line */
-        .nav-link::after {
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: -4px;
-          width: 0%;
-          height: 1.5px;
-          background: ${BROWN};
-          transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-          width: 100%;
-        }
-        .nav-link.opacity-100::after {
-           width: 100%;
-        }
-
-        /* UPDATED: Search Input Placeholder Color */
-        .search-input::placeholder {
-          color: ${BLACK};
-          opacity: 1; /* Make it distinct */
-        }
-        
-        /* Fallback for specific browsers */
-        .search-input::-webkit-input-placeholder {
-          color: ${BLACK};
-        }
-        .search-input:-ms-input-placeholder {
-          color: ${BLACK};
-        }
+        .nav-link::after { content: ""; position: absolute; left: 0; bottom: -4px; width: 0%; height: 1.5px; background: ${BROWN}; transition: width 0.4s ease; }
+        .nav-link:hover::after, .nav-link.opacity-100::after { width: 100%; }
+        ${isMobileMenuOpen || isWishlistOpen ? "body { overflow: hidden; }" : ""}
       `}</style>
     </>
   );

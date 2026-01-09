@@ -9,7 +9,7 @@ const Categories = () => {
   return (
     <div 
       // UPDATED: Reduced padding to pt-20 (mobile) and pt-24 (desktop)
-      className="w-full min-h-screen flex flex-col pt-20 md:pt-24" 
+      className="w-full min-h-screen flex flex-col pt-20 md:pt-20" 
       style={{ background: WHITE }}
     >
       

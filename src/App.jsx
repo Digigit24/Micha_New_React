@@ -7,7 +7,6 @@ import Home from "./components/Hero";
 import About from "./components/About.jsx";
 import Product from "./components/Product.jsx";
 import Categories from "./components/Categories.jsx";
-import Offers from "./components/Offers.jsx";
 import Contact from "./components/Contact.jsx";
 
 const App = () => {
@@ -19,7 +18,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/product" element={<Product />} />
         <Route path="/categories" element={<Categories />} />
-        <Route path="/offers" element={<Offers />} />
+        {/* <Route path="/offers" element={<Offers />} /> */}
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </BrowserRouter>
