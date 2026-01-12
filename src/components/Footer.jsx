@@ -38,11 +38,15 @@ const Footer = () => {
 
   return (
     <footer
-      // UPDATED: Added 'relative' and 'z-10' to ensure it stays at the bottom in the flow
-      className="w-full pt-16 pb-8 relative z-10"
+      // FIXES:
+      // 1. relative: Ensures it sits AFTER content (at the end of scroll).
+      // 2. overflow-hidden: Prevents side-scrolling/shaking.
+      // 3. w-full: Full width.
+      className="w-full pt-16 pb-8 relative overflow-hidden"
       style={{
         backgroundColor: BROWN,
         color: SAND,
+        zIndex: 10,
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -172,7 +176,6 @@ const Footer = () => {
 
       {/* CSS Styles */}
       <style>{`
-        /* Links: Default Sand -> Hover Gold */
         .footer-link {
           color: ${SAND};
           transition: color 0.3s ease, transform 0.2s ease;
@@ -182,7 +185,6 @@ const Footer = () => {
           transform: translateX(4px); 
         }
 
-        /* Social Icons: Default Sand -> Hover Gold + Border Gold */
         .social-icon {
           color: ${SAND};
           transition: all 0.3s ease;
@@ -193,7 +195,6 @@ const Footer = () => {
           transform: translateY(-3px);
         }
 
-        /* Contact icons hover effect */
         .footer-contact {
             transition: color 0.3s ease;
         }
@@ -201,7 +202,6 @@ const Footer = () => {
             color: ${GOLD};
         }
         
-        /* Fix placeholder color manually since tailwind sometimes needs explicit class */
         input::placeholder {
           color: ${SAND};
           opacity: 0.6;
